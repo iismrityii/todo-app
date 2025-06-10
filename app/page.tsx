@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, ChangeEvent } from "react";
-import { Button, Input, List } from "antd";
+import { useState } from "react";
 
-export default function Home() {
-  const [task, setTask] = useState<string>("");
+export default function Page() {
+  const [task, setTask] = useState("");
   const [todos, setTodos] = useState<string[]>([]);
 
   const addTask = () => {
@@ -20,31 +19,34 @@ export default function Home() {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-4 shadow-lg rounded-xl bg-white">
-      <h1 className="text-2xl font-bold text-center mb-4">To-do List</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100">
+      <div className="max-w-md w-full p-6 shadow-xl rounded-xl bg-white">
+        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">To-Do List</h1>
 
-      <div className="flex gap-2 mb-4">
-        <Input value={task} onChange={(e) => setTask(e.target.value)} placeholder="Enter a task" />
-        <Button type="primary" onClick={addTask}>
-          Add
-        </Button>
-      </div>
+        <div className="flex gap-2 mb-4">
+          <input
+            type="text"
+            value={task}
+            onChange={(e) => setTask(e.target.value)}
+            placeholder="Enter task"
+            className="flex-1 border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          />
+          <button onClick={addTask} className="bg-purple-500 hover:bg-purple-600 text-white font-semibold px-4 py-2 rounded">
+            Add
+          </button>
+        </div>
 
-      <List
-        bordered
-        dataSource={todos}
-        renderItem={(item, index) => (
-          <List.Item
-            actions={[
-              <Button type="link" danger onClick={() => deleteTask(index)} key="delete">
+        <ul className="space-y-2">
+          {todos.map((todo, index) => (
+            <li key={index} className="flex justify-between items-center bg-purple-50 px-3 py-2 rounded shadow-sm">
+              <span className="text-gray-700">{todo}</span>
+              <button onClick={() => deleteTask(index)} className="text-red-500 hover:underline">
                 Delete
-              </Button>,
-            ]}
-          >
-            {item}
-          </List.Item>
-        )}
-      />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
