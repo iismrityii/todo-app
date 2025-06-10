@@ -1,3 +1,4 @@
+import "antd/dist/reset.css";
 import "./globals.css";
 
 export default function RootLayout({
@@ -11,5 +12,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
