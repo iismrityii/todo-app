@@ -16,7 +16,7 @@ export default function Home() {
       //? Use this when you want to update the state directly
       // setTodos([...todos, trimmedTask]);
 
-      //? Use this when yo want to update the state based on the previous state
+      //? Use this when you want to update the state based on the previous state
       setTodos((previousTodos: string[]) => {
         // I need to check if the trimmedTask is "Walia"
         if (trimmedTask.toLowerCase() === "Walia".toLowerCase()) {
