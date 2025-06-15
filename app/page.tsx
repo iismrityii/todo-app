@@ -8,7 +8,7 @@ export default function Home() {
   const [todos, setTodos] = useState<string[]>([]); // Initialize todos as an empty array
   const [todoForm] = Form.useForm();
   const inputRef = useRef(null);
-  const [editIndex, setEditIndex] = useState<number | null>(null); //to track which task is being edited
+  const [editIndex, setEditIndex] = useState<number | null>(null); //to track which task is being edited //! No need for this state
 
   // Better comments extension
   // This function adds a new task to the todo list
@@ -50,6 +50,7 @@ export default function Home() {
     toast.success("Task added successfully!");
   };
 
+  // Use this function to add or update a task
   const addTaskUpdated = () => {
     // Get the value from the input field
     const todoEnteredByUser = todoForm.getFieldValue("smriti") as string;
@@ -63,7 +64,7 @@ export default function Home() {
         toast.error("Please enter a valid task!");
         return;
       }
-
+      // Can be improved
       const updatedTodos = [...todos];
       updatedTodos[editIndex] = trimmedTask;
       setTodos(updatedTodos);
@@ -89,6 +90,10 @@ export default function Home() {
     setTodos(updatedTodos);
   };
 
+  // Call back function
+  // ["Tarun", "Bidaliya"].forEach((todo, index, actualArray) => {
+
+  // });
   return (
     <div className="max-w-md mx-auto mt-10 p-6 rounded-xl shadow-lg bg-gradient-to-r from-indigo-100 to-blue-100">
       <h1 className="text-3xl font-bold text-center mb-6 text-indigo-700">To-do List</h1>
@@ -132,7 +137,7 @@ export default function Home() {
                 type="link"
                 onClick={() => {
                   setEditIndex(index); //Mark current task for editing
-                  todoForm.setFieldsValue({ smriti: todos[index] }); // Prefill input field
+                  todoForm.setFieldsValue({ smriti: item }); // Prefill input field
                 }}
                 key={`edit-${index}`}
               >
