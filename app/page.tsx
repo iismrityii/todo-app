@@ -8,6 +8,8 @@ export default function Home() {
   const [todos, setTodos] = useState<string[]>([]); // Initialize todos as an empty array
   const [todoForm] = Form.useForm();
   const inputRef = useRef(null);
+  const [editIndex, setEditIndex] = useState<number | null>(null); //to track which task is being edited
+
   // Better comments extension
   // This function adds a new task to the todo list
   const addTask = () => {
@@ -49,18 +51,35 @@ export default function Home() {
   };
 
   const addTaskUpdated = () => {
-    // Get the value of the input field (via the todoForm)
+    // Get the value from the input field
     const todoEnteredByUser = todoForm.getFieldValue("smriti") as string;
-    console.log("🚀 ~ addTaskUpdated ~ todoEnteredByUser:", todoEnteredByUser);
-    // Add the value to the todos array if it's not empty
-    if (todoEnteredByUser.trim() !== "") {
-      setTodos([...todos, todoEnteredByUser.trim()]); // Add the task to the todos array
-      todoForm.resetFields(); // Reset the form fields
-      toast.success("Task added successfully!"); // Show success message
-      // todoForm.getFieldInstance("smriti").focus(); // Focus back on the input field
-      // todoForm.focusField("smriti"); // Focus back on the input field
+
+    // Trim whitespace
+    const trimmedTask = todoEnteredByUser.trim();
+
+    // If editing, update the task at that index
+    if (editIndex !== null) {
+      if (trimmedTask === "") {
+        toast.error("Please enter a valid task!");
+        return;
+      }
+
+      const updatedTodos = [...todos];
+      updatedTodos[editIndex] = trimmedTask;
+      setTodos(updatedTodos);
+      setEditIndex(null); // Exit edit mode
+      toast.success("Task updated!");
+      todoForm.resetFields(); // Clear form after editing
+      return; // Prevent falling through to "add"
+    }
+
+    // If adding a new task
+    if (trimmedTask !== "") {
+      setTodos([...todos, trimmedTask]);
+      toast.success("Task added successfully!");
+      todoForm.resetFields(); // Clear form after adding
     } else {
-      toast.error("Please enter a valid task!"); // Show error message if input is empty
+      toast.error("Please enter a valid task!");
     }
   };
 
@@ -109,6 +128,16 @@ export default function Home() {
         renderItem={(item, index) => (
           <List.Item
             actions={[
+              <Button
+                type="link"
+                onClick={() => {
+                  setEditIndex(index); //Mark current task for editing
+                  todoForm.setFieldsValue({ smriti: todos[index] }); // Prefill input field
+                }}
+                key={`edit-${index}`}
+              >
+                Edit
+              </Button>,
               <Button type="link" danger onClick={() => deleteTask(index)} key={`delete-${index}`}>
                 Delete
               </Button>,
