@@ -54,36 +54,27 @@ export default function Home() {
   const addTaskUpdated = () => {
     // Get the value from the input field
     const todoEnteredByUser = todoForm.getFieldValue("smriti") as string;
+    const indexToEdit = todoForm.getFieldValue("editIndex");
 
     // Trim whitespace
     const trimmedTask = todoEnteredByUser.trim();
 
-    // If editing, update the task at that index
-    if (editIndex !== null) {
-      if (trimmedTask === "") {
-        toast.error("Please enter a valid task!");
-        return;
-      }
-      // Can be improved
-      const updatedTodos = [...todos];
-      updatedTodos[editIndex] = trimmedTask;
-      setTodos(updatedTodos);
-      setEditIndex(null); // Exit edit mode
-      toast.success("Task updated!");
-      todoForm.resetFields(); // Clear form after editing
-      return; // Prevent falling through to "add"
+    if (!trimmedTask) {
+      toast.error("Please enter a valid task!");
+      return;
     }
 
-    // If adding a new task
-    if (trimmedTask !== "") {
+    if (indexToEdit !== undefined && indexToEdit !== null) {
+      setTodos((prev) => prev.map((todo, idx) => (idx == indexToEdit ? trimmedTask : todo)));
+      toast.success("Task updated!");
+    } else {
       setTodos([...todos, trimmedTask]);
       toast.success("Task added successfully!");
-      todoForm.resetFields(); // Clear form after adding
-    } else {
-      toast.error("Please enter a valid task!");
     }
-  };
 
+    todoForm.resetFields(); //clear input & editIndex
+  };
+  
   //! This function deletes a task from the todo list by its index
   const deleteTask = (index: number) => {
     const updatedTodos = todos.filter((_, i) => i !== index);
@@ -118,6 +109,10 @@ export default function Home() {
             <Input placeholder="Enter a task" />
           </Form.Item>
 
+          <Form.Item name="editIndex" hidden>
+            <Input />
+          </Form.Item>
+
           <Form.Item className="">
             <Button type="primary" htmlType="submit">
               Add
@@ -136,10 +131,11 @@ export default function Home() {
               <Button
                 type="link"
                 onClick={() => {
-                  setEditIndex(index); //Mark current task for editing
-                  todoForm.setFieldsValue({ smriti: item }); // Prefill input field
+                  todoForm.setFieldsValue({
+                    smriti: todos[index],
+                    editIndex: index,
+                  });
                 }}
-                key={`edit-${index}`}
               >
                 Edit
               </Button>,
