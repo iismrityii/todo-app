@@ -3,11 +3,16 @@
 import { useRef, useState } from "react";
 import { Button, Input, List, Form } from "antd";
 import toast from "react-hot-toast";
+import app from "@/config/firebase/firebase";
+import { login, logout } from "@/config/firebase/auth";
+import { User } from "firebase/auth";
 export default function Home() {
   const [task, setTask] = useState<string>(""); // Initialize task as an empty string
   const [todos, setTodos] = useState<string[]>([]); // Initialize todos as an empty array
   const [todoForm] = Form.useForm();
   const inputRef = useRef(null);
+  const [currentLoggedInUser, setCurrentLoggedInUser] = useState<User | null>(null);
+  const newApp = app;
 
   // Better comments extension
   // This function adds a new task to the todo list
@@ -86,6 +91,29 @@ export default function Home() {
   // });
   return (
     <div className="max-w-md mx-auto mt-10 p-6 rounded-xl shadow-lg bg-gradient-to-r from-indigo-100 to-blue-100">
+      <div className="flex float-end gap-2">
+        <Button
+          onClick={async () => {
+            const user = await login();
+            if (user) {
+              setCurrentLoggedInUser(user);
+            }
+          }}
+        >
+          Login
+        </Button>
+        <Button
+          danger
+          onClick={async () => {
+            await logout();
+            setCurrentLoggedInUser(null);
+          }}
+        >
+          Logout
+        </Button>
+        {/* Conditional rendering */}
+        {currentLoggedInUser && currentLoggedInUser.displayName && <h1>{currentLoggedInUser.displayName}</h1>}
+      </div>
       <h1 className="text-3xl font-bold text-center mb-6 text-indigo-700">To-do List</h1>
 
       <div className="flex gap-2 mb-4">
