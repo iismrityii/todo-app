@@ -8,7 +8,6 @@ export default function Home() {
   const [todos, setTodos] = useState<string[]>([]); // Initialize todos as an empty array
   const [todoForm] = Form.useForm();
   const inputRef = useRef(null);
-  const [editIndex, setEditIndex] = useState<number | null>(null); //to track which task is being edited //! No need for this state
 
   // Better comments extension
   // This function adds a new task to the todo list
@@ -74,7 +73,7 @@ export default function Home() {
 
     todoForm.resetFields(); //clear input & editIndex
   };
-  
+
   //! This function deletes a task from the todo list by its index
   const deleteTask = (index: number) => {
     const updatedTodos = todos.filter((_, i) => i !== index);
